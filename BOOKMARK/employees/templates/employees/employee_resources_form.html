@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+<div class="container my-5 py-5">
+    {% block heading %}
+    <h1 class="display-4 py-2 text-center">User</h1>
+    {% endblock %}
+    {% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group mx-auto">
+                <legend class="border-bottom mb-4 text-center">
+                    Employee RESOURCES Details
+                </legend>
+
+                {{ form_urina_rotina.management_form }}
+
+                {% for form in all_forms %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ form.volume.label }}</label>
+                    {{ form.volume }}
+                </div>
+                {% endfor %}
+
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">
+                    Update
+                </button>
+                <a href="{% url 'hr_page' %}">Cancel </a>
+            </div>
+        </form>
+    </div>
+    {% endblock %}
+
+    <!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <!--    <script>-->
+    <!--      $(document).ready(function()-->
+    <!--{-->
+    <!--  $('#id_username').change(function()-->
+    <!--  {-->
+    <!--    var g = $('#id_username').val();-->
+    <!--    console.log(g + "@ss.zain.com");-->
+
+    <!--    $('#id_email').val(g + "@ss.zain.com")-->
+    <!--  }-->
+    <!--  )-->
+    <!--}-->
+    <!--)-->
+    <!--    </script>-->
+
+
+</div>
+
+

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block heading %}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12 col-md-10">
+                <h1 class="text-center"><span class="fas fa-users fa-4"> </span> Employees List </h1>
+            </div>
+            <div class="col-sm-12 col-md-2">
+                <a class="btn btn-outline-success" href="#" id="btn-refresh">REFRESH</a>
+            </div>
+
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
+{% endblock heading %}
+
+
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+
+
+                <div class="card card-primary">
+                    <div class="card-body ">
+                        <!-- THE CALENDAR -->
+                        <div id="theTable">
+                            <table class="table table-bordered hover cell-border " id="userDetailTable">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Emp Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">EmpNo</th>
+                                    <th scope="col">Update</th>
+                                    <th scope="col">OFFICE RESOURCES</th>
+                                    <th scope="col">Joined On</th>
+                                    <th scope="col">Department</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for emp in employees %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{emp.get_name}}</td>
+                                    <td>{{emp.get_type}}</td>
+                                    <td>{{emp.empNo}}</td>
+                                    <td>
+                                        <a class="btn btn-outline-info mb-4" href="{% url 'update_employee' emp.pk %}">Update</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-outline-info mb-4"
+                                           href="{% url 'allocate_resources' emp.pk %}">Allocate Resources</a>
+                                    </td>
+                                    <td>{{emp.date_joined | date:"j-N-Y"}}</td>
+
+                                    <td>{{emp.get_department | date:"j-N-Y"}}</td>
+
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+
+
+<!--<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>-->
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>-->
+
+<!--        <script src="js/scripts.js"></script>-->
+<!--        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" ></script>-->
+<!--        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>-->
+<!--        <script src="assets/demo/datatables-demo.js"></script>-->
+
+
+<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>-->
+<!--<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>-->
+<!--<script src ="https://cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js"></script>-->
+<!--<script src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" > </script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" ></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js" ></script>-->
+{% endblock content %}
+
+{% block script %}
+
+<script type="text/javascript">
+
+var oTable;
+
+function refresh_data(){
+ oTable =$('#userDetailTable').DataTable({
+
+  'deferRender': false,
+
+  data:window.aj_data,
+responsive:true,
+dom:'Bfrtip',
+lengthMenu:[
+[5,10,25,50,-1],
+['5rows','10rows','25rows','50rows','Showall']
+],
+buttons:[
+'pageLength','copy','csv','excel','pdf'
+],
+select:true,
+hover:true,
+  'ajax'       : {
+    "type"   : "GET",
+    "url":"{% url 'api-employees'%}",
+    "dataSrc": function (json) {
+      var return_data = new Array();
+      for(var i=0;i< json.length; i++){
+        return_data.push({
+          'id': (i +1 ),
+          'name'  : json[i].get_name,
+          'emptype' : json[i].employeetype,
+          'empno':json[i].empNo,
+          'update':'<a class ="btn btn-outline-dark" href="/update/' + json[i].id + '">Update Data</a>',
+          'allocate':'<a class ="btn btn-outline-dark" href="/allocate_resources/' + json[i].id +'">Allocate Resources</a>',
+          'joined':json[i].date_joined,
+          'department':json[i].get_department,
+        })
+      }
+      return return_data;
+    }
+  },
+  "columns"    : [
+    {'data': 'id'},
+    {'data': 'name'},
+    {'data': 'emptype'},
+    {'data': 'empno'},
+    {'data': 'update'},
+    {'data':'allocate'},
+    {'data': 'joined'},
+    {'data':'department'}
+  ]
+  });
+};
+
+$(document).ready(refresh_data());
+
+$('#btn-refresh').click(function(event) {
+
+event.preventDefault();
+oTable.ajax.reload();
+
+});
+
+
+
+</script>
+
+
+{% endblock %}
+
+
+
+
+

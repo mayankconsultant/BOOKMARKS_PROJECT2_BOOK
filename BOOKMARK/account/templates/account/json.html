@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+
+JSON TRIAL
+{% endblock title %}
+
+{%block content %}
+
+<h1 class="text-center">Hello Lets test new thing a Day </h1>
+
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-md-6">
+            <div class="jumbotron bg-info" id="divdepartments">
+                <ul class="departments">
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="list-group border-2 " id="divteams">
+                <ul class="teams">
+
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+
+console.log($);
+let in_d =[]
+
+$(document).ready(function() {
+
+          get_department();
+          $(document).ajaxSuccess(function() {
+  //$( "#divdepartments" ).text( "Triggered ajaxSuccess handler." );
+  var ul = $('<ul/>')
+  //ul.addClass('bg-info');
+   $.each(in_d, function(i) {
+   var li = $('<li/>')
+   li.addClass('bg-info mb-2 pb-2 rounded text-center list-group-item')
+   li.attr('itemid', 'item-'+this.id);
+   li.draggable();
+  li.append(this.name);
+  ul.append(li)
+    });
+    $( "#divdepartments" ).append(ul);
+});
+
+               //
+
+               $("#teams").droppable({
+  cursor: 'pointer',
+        helper: 'clone',
+        revert: 'invalid'
+});
+   //AJAX ends
+               });
+
+
+
+function print_data() {
+console.log( in_d );
+}
+
+function get_department() {
+
+let in_department = [];
+
+$.ajax(  {
+            url: "{% url 'ajax-department' %}",
+            type: "get", //send it through get method
+            success: function(response) {
+                                         in_department = response;
+                                         console.log(in_department);
+                                         in_d=in_department
+
+                                         $('#divdepartments').removeClass('bg-info');
+                                         $('#divdepartments').addClass('bg-warning');
+
+                                        },
+            error: function(xhr) {
+                                //Do Something to handle error
+                                }
+            } );
+            //return in_department;
+};
+
+function print_array(in_department) {
+        for (i of in_department){
+            console.log(i);
+        }
+}
+
+
+
+
+</script>
+
+{% endblock script %}

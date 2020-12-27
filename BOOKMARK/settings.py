@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,17 +25,29 @@ SECRET_KEY = 'c3_96uhir=dqa@k@uffcbdd(*bv0=4gi%_@fna+ls)&s8$xh2g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 3rd party
+
+    'crispy_forms',
+    'debug_toolbar',
+    'mptt',
+
+    # LOCAL
+    'account.apps.AccountConfig',
+    'employees.apps.EmployeesConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -45,14 +58,24 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 3rd party
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'BOOKMARK.urls'
 
+# REST_FRAMEWORK ={
+#     'DEFAULT_PERMISSION_CLASSES':[
+#         'rest_framework.permissions.DjangoModelPermissions'
+#     ]
+# }
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,4 +134,57 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+import os
+
+MAIN_PROJECT = os.path.dirname(__file__)
+
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(MAIN_PROJECT, 'account/static/'),
+)
+
+AUTH_USER_MODEL = 'account.Employee'
+
+INSTALLED_APPS = INSTALLED_APPS + ['django_extensions', ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL,
+#                           document_root=settings.MEDIA_ROOT)
+
+LOGIN_REDIRECT_URL = 'hr_page'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 600  # set just 10 seconds to test
+SESSION_SAVE_EVERY_REQUEST = True
+
+# EMAIL SET UP
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'mayank.atyourwork@gmail.com'
+EMAIL_HOST_PASSWORD = 'shah1727'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# shell plus
+
+SHELL_PLUS_PRINT_SQL = True
+
+# debug-toolbar
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]

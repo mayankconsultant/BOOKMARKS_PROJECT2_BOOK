@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mx-auto text-center">
+    <div class="card bg-gradient-info mx-auto justify-content-center shadow-5 mt-lg-5 mt-md-2 mb-auto"
+         style="width: 18rem;border-width:5">
+        <div class="card-header mx-auto ">
+
+            <h1 class="display-4 mt-2 py-2 card-title text-center ">LOGIN </h1>
+
+        </div>
+
+        <div class="card-body text-center">
+
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{form.as_p}}
+
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-dark bg-gradient-maroon" type="submit">
+                        Login Now
+                    </button>
+                    <br>
+                    <div class="row px-5 mt-2">
+                        <small class="text-light">
+                            <a class="ml-2 text-light btn btn-outline-dark bg-gradient-pink"
+                               href="{% url 'password_reset' %}">Forgot Password?
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-body text-center">
+            <div class="border-top pt-3">
+                <small class="text-primary">
+                    Not Registered Yet? ?
+                    <a class="ml-2 text-light btn btn-outline-dark bg-gradient-blue" href="{% url 'create_employee' %}">Register
+                    </a>
+                </small>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

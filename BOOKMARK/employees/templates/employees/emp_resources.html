@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load employee_tags %}
+{% load static %}
+
+{% block bootstrapscript %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
+
+{% block heading %}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12 col-md-10">
+
+                <h1 class="text-center"><span class="fas fa-laptop-medical fa-4"> </span> {{ resources.employee.get_name
+                    }} </h1>
+            </div>
+            <div class="col-sm-12 col-md-2">
+                <div class="text-right">
+                    <a class="btn btn-outline-success pull-right" href="#" id="btn-refresh">REFRESH</a>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
+{% endblock heading %}
+
+
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+
+
+                <div class="card card-primary">
+                    <div class="card-body ">
+                        <div id="theTable">
+                            <table class="table table-bordered hover cell-border " id="EmpResourceTable">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Resource Type</th>
+                                    <th scope="col">Resource_id</th>
+                                    <th scope="col">Assign date</th>
+                                    <th scope="col">Deactive Date</th>
+                                    <th scope="col">Deactive Comments</th>
+                                    <th scope="col">Update</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+
+<!--  Create NEw Resource   -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+
+                <!--                 {{form|crispy }}-->
+
+
+                <div class="card card-primary">
+                    <div class="card-head bg-success text-center">
+                        Assign New Resource
+                    </div>
+                    <div class="card-body ">
+                        <div id="theData">
+                        </div>
+                        <form class="align-items-center" method="post">
+                            {% csrf_token %}
+                            <div class="form-group mb-2" style="display:none">
+                                <input class="form-control-plaintext " id="employeeid" readonly type="text"
+                                       value="{{employeeid.username}}">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="id_resource_type">Select Resource</label>
+                                    <select class="custom-select " id="id_resource_type" name="resource_type">
+                                        <option selected value="">SELECT RESOURCE</option>
+                                        <option value="LAPTOP">LAPTOP</option>
+
+                                        <option value="WORKSTATION">WORKSTATION</option>
+
+                                        <option value="MOBILE">MOBILE</option>
+
+                                        <option value="DATACARD">DATACARD</option>
+
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+
+                                    <label for="id_resource_id">Resource id</label>
+                                    <input class="form-control" id="id_resource_id" name="resource_id" type="text">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="id_assigned_date">Assigned date</label>
+                                    <input dateformat="d MM y" id="id_assigned_date" name="assigned_date" type="date">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <button class="btn btn-primary" id="dotheneedful" type="submit">Confirm</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+</section>
+
+<!-- Modal -->
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Deactivate Date</h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--        <h1 id="idname"></h1>-->
+
+                <form class="align-items-center" method="post">
+                    {% csrf_token %}
+                    <div class="form-group mb-2" style="display:none">
+                        <input class="form-control-plaintext " id="id_resource" readonly type="text" value="#">
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label for="id_deassigned_date">Date for Deassign the Resource</label>
+                            <input dateformat="d MM y" id="id_deassigned_date" name="assigned_date" type="date">
+                        </div>
+
+                        <div class="form-group col-md-5">
+
+                            <label for="id_deassigned_comments">Deassigned Comments</label>
+                            <input class="form-control" id="id_deassigned_comments" maxlength="20"
+                                   name="deassigned_comments" type="text">
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" id="update_confirm" type="button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>-->
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>-->
+
+<!--        <script src="js/scripts.js"></script>-->
+<!--        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" ></script>-->
+<!--        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>-->
+<!--        <script src="assets/demo/datatables-demo.js"></script>-->
+
+
+<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>-->
+<!--<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>-->
+<!--<script src ="https://cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js"></script>-->
+<!--<script src = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" > </script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" ></script>-->
+<!--<script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js" ></script>-->
+{% endblock content %}
+
+{% block script %}
+
+<script type="text/javascript">
+
+
+
+var oTable;
+var in_data;
+var out_data;
+
+var id_resource;
+
+console.log( {{employeeid}} );
+
+function print_log() {
+$.ajax({
+  url: "{% url 'api-employees-resource' employeeid %}",
+  type: "get", //send it through get method
+  success: function(response) {
+    in_data= response;
+    console.log(in_data)
+  },
+  error: function(xhr) {
+    //Do Something to handle error
+  }
+});
+
+}
+
+function refresh_data(){
+ oTable =$('#EmpResourceTable').DataTable({
+
+  'deferRender': false,
+
+  data:window.aj_data,
+responsive:true,
+dom:'Bfrtip',
+lengthMenu:[
+[5,10,50,100,-1],
+['5rows','10rows','50rows','100rows','Showall']
+],
+buttons:[
+'pageLength','copy','csv','excel','pdf'
+],
+select:true,
+hover:true,
+  'ajax'       : {
+    "type"   : "GET",
+    "url":"{% url 'api-cru' employeeid %}",
+    "dataSrc": function (json) {
+      var return_data = new Array();
+      for(var i=0;i< json.length; i++){
+        return_data.push({
+          'id': (i +1 ),
+          'resouretype'  : json[i].resource_type,
+          'resource_id' : json[i].resource_id,
+          'assigned_date':json[i].assigned_date,
+          'deassigned_date':json[i].deassigned_date,
+          'd_comments':json[i].deassigned_comments,
+          //'update':'<p data-placement="top" title="Edit"><a href="/edit/'+json[i].id + '/" class="btn btn-warning btn-sm" data-title="Edit" data-toggle="modal" data-target="#exampleModal" ><span class="fas fa-pencil-ruler"></span></a></p>',
+          'update':'<button type="button" class="btn btn-primary" data-toggle="modal" data-id="'+json[i].id+'" data-target="#exampleModal"><span class="fas fa-pencil-ruler"></span></button>'
+          })
+      }
+      return return_data;
+    }
+  },
+  "columns"    : [
+    {'data': 'id'},
+    {'data': 'resouretype'},
+    {'data': 'resource_id'},
+    {'data': 'assigned_date'},
+    {'data': 'deassigned_date'},
+    {'data':'d_comments'},
+    {'data':'update'},
+
+  ]
+  });
+};
+
+$(document).ready(
+refresh_data(),
+print_log()
+);
+
+$('#btn-refresh').click(function(event) {
+
+event.preventDefault();
+oTable.ajax.reload();
+
+});
+
+
+$('#update_confirm').click(function(event) {
+
+event.preventDefault();
+console.log("hello btn clicked" );
+
+var de_date= document.getElementById('id_deassigned_date').value + " 00:00";
+var de_comments= document.getElementById('id_deassigned_comments').value;
+var id_resources = $("#id_resource").val();
+var my_url = "../api/rud/" + id_resources;
+console.log(my_url);
+   $.ajax({
+    type:'patch',
+    url :my_url,
+    data: {
+        "id":id_resources,
+        "deassigned_date": de_date,
+        "deassigned_comment" :de_comments,
+        },
+    headers: { "X-CSRFToken": "{{ csrf_token }}" },
+    success:function(data) {
+    console.log(data.result);
+    oTable.ajax.reload();
+
+    },
+
+    });
+
+});
+
+$('#dotheneedful').click(function(event) {
+
+let no_error =true;
+
+event.preventDefault();
+
+
+
+var a_data = document.getElementById('id_resource_id').value;
+var a_date = document.getElementById('id_assigned_date').value;
+if  (a_date === "")  {
+    document.getElementById('theData').innerHTML=`<h1>Date cannot be Null</h1>`;
+    console.log('Date is NUll ' );
+    no_error = false;
+    setTimeout(function() {
+    document.getElementById('theData').innerHTML=``;
+    },2000);
+};
+
+a_date= a_date + " 00:00";
+if  (a_data === "")  {
+    document.getElementById('theData').innerHTML=`<h1>Resource ID cannot be Null</h1>`;
+    console.log('Resource ID is NUll ' );
+    no_error = false;
+    setTimeout(function() {
+    document.getElementById('theData').innerHTML=``;
+    },2000);
+};
+
+var a_res_ty = document.getElementById('id_resource_type').value;
+
+if  (a_res_ty === "")  {
+    document.getElementById('theData').innerHTML=`<h1>Resource Type cannot be Null</h1>`;
+    console.log('Resource Type is NUll ' );
+    no_error = false;
+    setTimeout(function() {
+    document.getElementById('theData').innerHTML=``;
+    },2000);
+};
+
+
+
+if  (no_error) {
+
+console.log(no_error);
+
+    $.ajax({
+    type:'post',
+    //url :"{% url 'api-employees-resource-add' employeeid %}",
+    url :"{% url 'api-cru' employeeid %}",
+    data: {
+        "resource_id": a_data,
+        "resource_type": a_res_ty,
+        "assigned_date": a_date,
+        "employeeid" :{{employeeid}},
+        },
+    headers: { "X-CSRFToken": "{{ csrf_token }}" },
+    success:function(data) {
+    console.log(data.result);
+    oTable.ajax.reload();
+
+    }
+
+    });
+
+
+} //if no_error  ended
+
+});
+
+$(document).ready(function() {
+    $('#exampleModal').on('show.bs.modal', function(event) {
+        $("#id_resource").val($(event.relatedTarget).data('id'));
+        id_resources = $("#id_resource").val();
+        console.log($("#id_resource").val());
+    });
+});
+
+
+
+</script>
+
+
+{% endblock %}
+
+
+
+
+
